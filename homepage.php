@@ -38,23 +38,18 @@
             border: 1px solid #ccc;
             border-top: none;
             }
-
             table {
                   border-collapse: collapse;
                 }
-
             table, th, td{
                 border: 1px solid black;
                 }
-
             th, td{
                 text-align: center;
             }
-
             tr:nth-child(even) {
                 background-color: #f2f2f2;
             }
-
             th {
                  background-color: #4CAF50;
                  color: white;
@@ -75,18 +70,44 @@
             <h3>Movies</h3>
             <p>IT</P>
             <?php
-            $con = new mysqli("127.0.0.1", "root", "366Andr!dge", "mydb");
-            $sql = "SELECT reviewID, user, rating, review, date_reviewed FROM Review WHERE reviewID IN (SELECT reviewID FROM Movie_Review WHERE movieID=\"1\")";
-            $results = $con->query($sql);
+				$con = new mysqli("localhost","root","student", "testdb");
+        if ($con == false) {
+            die("ERROR: Could not connect. " .mysqli_connect_error());
+        }
+        else {
+          echo "connected succesfully<br>";
+        }
 
-            if($results->num_rows>0){
-                echo "<table><tr><th>User</th><th>Rating</th><th>Review</th><th>Date Reviewed</th></tr>";
-                while($row = $results->fetch_assoc()){
-                    echo "<tr><td>". $row['user']. "</td><td>". $row['rating']. "</td><td>". $row['review']. "</td><td>". $row['date_reviewed']. "</td></tr>";
+        $sql = "SELECT * FROM Review WHERE reviewID IN (SELECT reviewID FROM movie_review WHERE movieID='1')";
+        //$sql = "SELECT * FROM `movie`";
+        echo $sql;
+        echo "<br>";
+        $res = mysqli_query($con, $sql) or die('error with query');
+        if(true){
+            if(mysqli_num_rows($res) > 0 ){
+                        echo "<table><tr><th>User</th><th>Rating</th><th>Review</th><th>Date Reviewed</th></tr>";
+                while($row = mysqli_fetch_array($res)){
+                    echo "<tr>
+			<td>". $row['username']. "</td>
+			<td>". $row['rating']. "</td>
+			<td>". $row['review']. "</td>
+			<td>". $row['date_reviewed']. "</td>
+			</tr>";
                     }
                 echo "</table>";
+               
                 }
-            $con->close();
+           else {
+            echo "No matching records are found.";
+                }
+            }
+        else {
+             echo "ERROR: Could not able to execute $sql. ";
+           }
+
+        echo "<br>query should have printed";
+        mysqli_close($con);
+        //$con->close();
             ?>
         </div>
 
